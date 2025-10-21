@@ -83,6 +83,7 @@ app.get('/', (req, res) => {
         endpoints: {
             contact: '/api/contact/submit',
             newsletter: '/api/newsletter/subscribe', // ✅ ADD THIS LINE
+            careers: '/api/careers/apply',
             health: '/health'
         }
     });
