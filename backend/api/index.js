@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const contactRoutes = require('../routes/contact');
 const newsletterRoutes = require('../routes/newsletter'); // ✅ ADD THIS LINE
+const careerRoutes = require('../routes/careers');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -58,10 +59,12 @@ const limiter = rateLimit({
 // Apply rate limiting to both contact and newsletter routes
 app.use('/api/contact', limiter);
 app.use('/api/newsletter', limiter); // ✅ ADD THIS LINE
+app.use('/api/careers', careerRoutes);
 
 // Routes
 app.use('/api/contact', contactRoutes);
 app.use('/api/newsletter', newsletterRoutes); // ✅ ADD THIS LINE
+app.use('/api/careers', careerRoutes);
 
 // Health Check - IMPROVED
 app.get('/health', (req, res) => {

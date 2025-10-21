@@ -284,11 +284,84 @@ async function sendNewsletterWelcome(subscriptionData) {
     return transporter.sendMail(mailOptions);
 }
 
+// Send job application email with resume attachment
+const sendApplicationEmail = async (applicantDetails, resumeFile) => {
+    const transporter = createTransporter();
+    
+    const { name, email, portfolio, jobTitle, message } = applicantDetails;
+
+    const mailOptions = {
+        from: `"${process.env.FROM_NAME}" <${process.env.ZOHO_EMAIL}>`,
+        to: process.env.CAREERS_EMAIL, // careers@orivanta.ai
+        replyTo: email, // Reply directly to candidate
+        subject: `New Job Application: ${jobTitle} - ${name}`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+                    .content { background: #f8fafc; padding: 20px; border-radius: 0 0 8px 8px; }
+                    .info-row { margin: 10px 0; }
+                    .label { font-weight: bold; color: #1e3a8a; }
+                    .message-box { background: white; padding: 15px; border-left: 4px solid #06b6d4; margin: 15px 0; border-radius: 4px; }
+                    .footer { margin-top: 20px; padding-top: 20px; border-top: 2px solid #e2e8f0; font-size: 14px; color: #64748b; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2 style="margin: 0;">New Job Application Received</h2>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">${jobTitle}</p>
+                    </div>
+                    <div class="content">
+                        <div class="info-row">
+                            <span class="label">Applicant Name:</span> ${name}
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Email:</span> <a href="mailto:${email}">${email}</a>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Portfolio/LinkedIn:</span> ${portfolio || '<em>Not provided</em>'}
+                        </div>
+                        
+                        ${message ? `
+                            <div class="message-box">
+                                <div class="label" style="margin-bottom: 10px;">Additional Information:</div>
+                                <div style="white-space: pre-wrap;">${message}</div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="footer">
+                            <strong>📎 Resume attached to this email</strong>
+                            <p style="margin: 10px 0 0 0;">You can reply directly to this email to contact the candidate.</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `,
+        attachments: [
+            {
+                filename: resumeFile.originalname,
+                content: resumeFile.buffer,
+                contentType: resumeFile.mimetype
+            }
+        ]
+    };
+
+    await transporter.sendMail(mailOptions);
+};
+
+
 // ✅ SINGLE module.exports at the end - EXPORTS ALL 4 FUNCTIONS
 module.exports = {
     sendAdminNotification,
     sendAutoReply,
     sendNewsletterNotification,
-    sendNewsletterWelcome
+    sendNewsletterWelcome,
+    sendApplicationEmail
 };
 
