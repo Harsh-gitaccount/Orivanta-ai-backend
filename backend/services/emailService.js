@@ -286,7 +286,7 @@ async function sendNewsletterWelcome(subscriptionData) {
 
 // Send job application email with resume attachment
 const sendApplicationEmail = async (applicantDetails, resumeFile) => {
-    const transporter = createTransporter();
+ //   const transporter = createTransporter();
     
     const { name, email, portfolio, jobTitle, message } = applicantDetails;
 
